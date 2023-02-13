@@ -84,22 +84,38 @@ def get_contours_coords(roi_data: ROIData, series_data):
 
     return series_contours
 
+def chaikins_corner_cutting(coords, smoothing_factor):
+    for _ in range(smoothing_factor):
+        L = coords.repeat(2, axis=0)
+        R = np.empty_like(L)
+        R[0] = L[0]
+        R[2::2] = L[1:-1:2]
+        R[1:-1:2] = L[2::2]
+        R[-1] = L[-1]
+        coords = L * 0.75 + R * 0.25
 
-def find_mask_contours(mask: np.ndarray, approximate_contours: bool, smoothing_factor=1, scaling_factor=1):
+    return coords
+def find_mask_contours(mask: np.ndarray, approximate_contours: bool, smoothing_factor=5, scaling_factor=0):
     approximation_method = (
         cv.CHAIN_APPROX_SIMPLE if approximate_contours else cv.CHAIN_APPROX_NONE
     )
     contours, hierarchy = cv.findContours(
         mask.astype(np.uint8), cv.RETR_TREE, approximation_method
-    )
-    # Format extra array out of data
+    )# Format extra array out of data
+
     contours = list(
         contours
     )  # Open-CV updated contours to be a tuple so we convert it back into a list here
-
-    assert smoothing_factor > 0
     for i, contour in enumerate(contours):
-        contours[i] = [[(contour[i][0][0]/scaling_factor), (contour[i][0][1]/scaling_factor)] for i in range(0, len(contour), smoothing_factor)]
+
+        coords = np.squeeze(np.array(contour), 1)
+        coords = coords / scaling_factor
+        if smoothing_factor > 0 and coords.shape[0] > 2:
+            coords = chaikins_corner_cutting(coords, smoothing_factor)
+            coords = coords.round(1)
+        contours[i] = [[(coords[u, 0]), (coords[u, 1])] for u in range(coords.shape[0])]
+
+
     hierarchy = hierarchy[0]  # Format extra array out of data
 
     return contours, hierarchy
