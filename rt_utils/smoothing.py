@@ -10,8 +10,8 @@ default_smoothing_parameters_2d = {
     "filter_iterations": 3,
     "crop_margins": [20, 20, 1],
     "np_kron": {"scaling_factor": 3},
-    "ndimage_gaussian_filter": {"sigma": 2,
-                                "radius": 3},
+    "ndimage_gaussian_filter": {"sigma": 5,
+                                "radius": 5},
     "threshold": {"threshold": 0.5},
 }
 
@@ -165,8 +165,8 @@ def get_final_mask_shape_and_bbox(mask, bbox, scaling_factor, scaling_iterations
 
     bbox[:4] *= final_scaling_factor # Scale bounding box to final shape
     bbox[:4] -= round(final_scaling_factor * 0.5)  # Shift volumes to account for the shift that occurs as a result of the scaling
-    logging.info("Final shape: ", final_shape)
-    logging.info("Final bbox: ", bbox)
+    logging.info("Final shape: {}".format(final_shape))
+    logging.info("Final bbox: {}".format(bbox))
     return final_shape, bbox
 
 
