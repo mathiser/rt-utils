@@ -10,8 +10,8 @@ default_smoothing_parameters_2d = {
     "filter_iterations": 3,
     "crop_margins": [20, 20, 1],
     "np_kron": {"scaling_factor": 3},
-    "ndimage_gaussian_filter": {"sigma": 5,
-                                "radius": 5},
+    "ndimage_gaussian_filter": {"sigma": 5},#,
+                               # "radius": 5},
     "threshold": {"threshold": 0.5},
 }
 
