@@ -37,7 +37,7 @@ class RTStruct:
         roi_generation_algorithm: Union[str, int] = 0,
         apply_smoothing: Union[str, None] = None, # strings can be "2d" or "3d" or something else if a different smoothing function is used
         smoothing_function = smoothing.pipeline,  # Can be any function/set of functions that takes the following parameters
-            #                                     # smoothing_function(mask=mask, apply_smoothing=apply_smoothing,
+                                                  # smoothing_function(mask=mask, apply_smoothing=apply_smoothing,
                                                   #                    smoothing_parameters=smoothing_parameters) -> np.ndarray
                                                   # The returned np.ndarray can be of any integer scalar shape in x and y of the used dicom image.
                                                   # Note that Z direction should not be scaled. For instance CT_image.shape == (512, 512, 150).
