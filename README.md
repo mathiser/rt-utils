@@ -14,6 +14,7 @@
 ---
  
 RT-Utils is motivated to allow physicians and other users to view the results of segmentation performed on a series of DICOM images. RT-Utils allows you to create or load RT Structs, extract 3d masks from RT Struct ROIs, easily add one or more regions of interest, and save the resulting RT Struct in just a few lines!
+You can also use the RT-Utils for merging two existing RT Structs to one file.
 
 ## How it works
 RT-Utils provides a builder class to faciliate the creation and loading of an RT Struct. From there, you can add ROIs through binary masks and optionally input the colour of the region along with the region name.
@@ -23,6 +24,13 @@ The format for the ROI mask is an nd numpy array of type bool. It is an array of
 ## Installation
 ```
 pip install rt_utils
+```
+
+## Installation in editable mode
+```
+git clone https://github.com/qurit/rt-utils.git
+cd rt-utils
+pip install -e .
 ```
 
 ## Creating new RT Structs
@@ -117,6 +125,21 @@ plt.show()
   The results of a loading an exisiting ROI as a mask, as viewed in Python.
 </p>
 
+## Merging two existing RT Structs
+To be able to merge two RT Structs it is important that both RT Structs have to belong to the same image series,
+e.g. if there is one set for the organs at risk and one set for the target volume(s).
+```Python
+from rt_utils import RTStructMerger
+
+# Load existing RT Structs and corresponding image series and merge them into one RTStruct
+merged_rt_struct = RTStructMerger.merge_rtstructs(
+  dicom_series_path="./testlocation",
+  rt_struct_path1="./testlocation/rt-struct1.dcm",
+  rt_struct_path2="./testlocation/rt-struct2.dcm"
+  )
+merged_rt_struct.save('merged-rt-struct')
+```
+
 ## Additional Parameters
 The add_roi method of our RTStruct class has a multitude of optional parameters available. Below is a comprehensive list of all these parameters and what they do.
 - <b>color</b>: This parameter can either be a colour string such as '#ffffff' or a RGB value as a list such as '[255, 255, 255]'. This parameter will dictate the colour of your ROI when viewed in a viewing program. If no colour is provided, RT Utils will pick from our internal colour palette based on the ROI Number of the ROI.
@@ -125,3 +148,6 @@ The add_roi method of our RTStruct class has a multitude of optional parameters 
 - <b>use_pin_hole</b>: A boolean value that defaults to false. If set to true, lines will be erased through your mask such that each separate region within your image can be encapsulated via a single contour instead of contours nested within one another. Use this if your RT Struct viewer of choice does not support nested contours / contours with holes.
 - <b>approximate_contours</b>: A boolean value that defaults to True which defines whether or not approximations are made when extracting contours from the input mask. Setting this to false will lead to much larger contour data within your RT Struct so only use this if as much precision as possible is required.
 - <b>roi_generation_algorithm</b>: An enum value that defaults to 0 which defines what ROI generation algorithm will be used. 0=\'AUTOMATIC\', 1=\'SEMIAUTOMATIC\', or 2=\'MANUAL\'.
+
+#To be added
+nifti to rtstruct
